@@ -5,5 +5,6 @@
   (:export
    #:single-float-bits
    #:double-float-bits
+   #:float-bits
    #:make-single-float
    #:make-double-float))

@@ -5,7 +5,14 @@
 (declaim (inline single-float-bits
                  double-float-bits
                  make-single-float
-                 make-double-float))
+                 make-double-float
+                 float-bits))
+
+#+cmcucl
+(declaim (ext:constant-function single-float-bits
+                                double-float-bits
+                                make-single-float
+                                make-double-float))
 
 (defun single-float-bits (x)
   (declare (type single-float x))
@@ -61,7 +68,7 @@
 
 (defun make-double-float (low high)
   (declare (type (unsigned-byte 32) low)
-           (type (signed-byte   32) high))
+           (type (signed-byte 32) high))
   #+abcl (system:make-double-float (logior (ash high 32) low))
   #+allegro (excl:shorts-to-double-float (ldb (byte 16 16) high)
                                          (ldb (byte 16 0) high)
@@ -77,3 +84,8 @@
 (defun decode-float64 (low high)
   (ieee-floats:decode-float64
    (logior (ash high 32) low)))
+
+(defun float-bits (f)
+  (etypecase f
+    (single-float (single-float-bits f))
+    (double-float (double-float-bits f))))
