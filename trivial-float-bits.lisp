@@ -2,6 +2,9 @@
 
 (in-package #:trivial-float-bits)
 
+;;; TODO Make the behavior consistent between Lisps and always return
+;;; in the 0,2^31-128 range for single floats.
+
 (declaim (inline single-float-bits
                  double-float-bits
                  make-single-float
