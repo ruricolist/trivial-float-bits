@@ -9,11 +9,50 @@
 (defun run-tests ()
   (run! 'trivial-float-bits))
 
-(test single-float
+;;; Simple implementations for reference.
+
+(defun single-float-bits/cffi (x)
+  (declare (type single-float x))
+  (cffi:with-foreign-object (ptr :float)
+    (setf (cffi:mem-ref ptr :float) x)
+    (cffi:mem-ref ptr :uint32)))
+
+(defun double-float-bits/cffi (x)
+  (declare (type double-float x))
+  (let ((bits
+          (cffi:with-foreign-object (ptr :double)
+            (setf (cffi:mem-ref ptr :double) x)
+            (cffi:mem-ref ptr :uint64))))
+    (values (ldb (byte 32 0) bits)
+            (ldb (byte 64 32) bits))))
+
+(test single-float-vs-cffi
+  (flet ((correct? (s)
+           (= (single-float-bits s)
+              (single-float-bits/cffi s))))
+    (is (correct? 0s0))
+    (is (correct? 0s0))
+    (is (correct? -0s0))
+    (is (correct? -0s0))
+    (is (correct? 1s0))
+    (is (correct? -1s0))
+    (is (correct? most-negative-single-float))
+    (is (correct? least-negative-single-float))
+    (is (correct? most-positive-single-float))
+    (is (correct? least-positive-single-float))
+    (is (correct? single-float-epsilon))
+    (is (correct? single-float-negative-epsilon))))
+
+(test single-float-round-trip
   (declare (notinline single-float-bits make-single-float))
-  (flet ((round-trips? (s)
+  (flet ((correct? (s)
+           (= (single-float-bits s)
+              (single-float-bits/cffi s)))
+         (round-trips? (s)
            (is (= s (make-single-float (single-float-bits s))))))
+    (is (correct? 0s0))
     (is-true (round-trips? 0s0))
+    (is-true (round-trips? -0s0))
     (is-true (round-trips? -0s0))
     (is-true (round-trips? 1s0))
     (is-true (round-trips? -1s0))
@@ -35,6 +74,24 @@
        (loop for i from start to end
              always (= i (single-float-bits (make-single-float i)))
              do (incf count))))))
+
+(test double-float-vs-cffi
+  (declare (notinline make-double-float double-float-bits))
+  (flet ((round-trips? (d)
+           (multiple-value-bind (lo1 hi1) (double-float-bits d)
+             (multiple-value-bind (lo2 hi2) (double-float-bits/cffi d)
+               (is (= lo1 lo2))
+               (is (= hi1 hi2))))))
+    (is-true (round-trips? 0d0))
+    (is-true (round-trips? -0d0))
+    (is-true (round-trips? 1d0))
+    (is-true (round-trips? -1d0))
+    (is-true (round-trips? most-negative-double-float))
+    (is-true (round-trips? least-negative-double-float))
+    (is-true (round-trips? most-positive-double-float))
+    (is-true (round-trips? least-positive-double-float))
+    (is-true (round-trips? double-float-epsilon))
+    (is-true (round-trips? double-float-negative-epsilon))))
 
 (test double-float
   (declare (notinline make-double-float double-float-bits))

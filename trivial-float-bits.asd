@@ -14,6 +14,6 @@
 (asdf:defsystem "trivial-float-bits/test"
   :author "Paul M. Rodriguez <pmr@ruricolist.com>"
   :license  "MIT"
-  :depends-on ("fiveam" "trivial-float-bits")
+  :depends-on ("fiveam" "trivial-float-bits" "cffi")
   :perform (asdf:test-op (o c) (uiop:symbol-call :trivial-float-bits/test :run-tests))
   :components ((:file "test")))
