@@ -2,9 +2,6 @@
 
 (in-package #:trivial-float-bits)
 
-;;; TODO Make the behavior of make-*-float consistent between Lisps:
-;;; it should always take unsigned bytes.
-
 (declaim (inline single-float-bits
                  double-float-bits
                  make-single-float
