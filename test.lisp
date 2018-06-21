@@ -45,12 +45,8 @@
 
 (test single-float-round-trip
   (declare (notinline single-float-bits make-single-float))
-  (flet ((correct? (s)
-           (= (single-float-bits s)
-              (single-float-bits/cffi s)))
-         (round-trips? (s)
+  (flet ((round-trips? (s)
            (is (= s (make-single-float (single-float-bits s))))))
-    (is (correct? 0s0))
     (is-true (round-trips? 0s0))
     (is-true (round-trips? -0s0))
     (is-true (round-trips? -0s0))
@@ -63,17 +59,11 @@
     (is-true (round-trips? single-float-epsilon))
     (is-true (round-trips? single-float-negative-epsilon))
 
-    (print "Testing single float range...")
+    (print "Testing all single floats...")
     (force-output)
-    (let* ((low (single-float-bits most-negative-single-float))
-           (high (single-float-bits most-positive-single-float))
-           (start (min low high))
-           (end (max low high))
-           (count 0))
-      (is-true
-       (loop for i from start to end
-             always (= i (single-float-bits (make-single-float i)))
-             do (incf count))))))
+    (is-true
+     (loop for i from 0 below (expt 2 32)
+           always (= i (single-float-bits (make-single-float i)))))))
 
 (test double-float-vs-cffi
   (declare (notinline make-double-float double-float-bits))
