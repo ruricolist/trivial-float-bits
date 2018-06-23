@@ -1,7 +1,8 @@
 # trivial-float-bits
 ### _Paul M. Rodriguez <pmr@ruricolist.com>_
 
-You can use `trivial-float-bits` to convert between a float and its representation as an integer using implementation-specific functions.
+You can use `trivial-float-bits` to convert between a float and its
+representation as an integer using implementation-specific functions.
 
 ``` lisp
 (single-float-bits 1s0)
@@ -17,13 +18,16 @@ You can use `trivial-float-bits` to convert between a float and its representati
 => 1.0D0 (100.0D0%)
 ```
 
-Note that implementations differ in how they return the bits. SBCL, for example, returns a negative number for a negative single float, while CCL does not.
+Conversion is done using low-level functions provided by the Lisp
+implementation. If the Lisp implementation is unsupported, we fall
+back to the [IEEE-Floats][] library.
 
-For unknown implementations, we fall back to the [IEEE-Floats][]
-library.
+Note that implementations differ in whether they preserve the sign bit
+as the sign of the returned integer. This library normalizes the
+functions so they all take, and receive, only unsigned integers.
 
-The list of implementation-specific functions is taken unchanged from
-the source of [cl-protobufs][].
+The list of implementation-specific functions is taken mostly
+unchanged from the source of [cl-protobufs][].
 
 ## License
 
