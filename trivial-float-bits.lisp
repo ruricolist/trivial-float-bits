@@ -84,7 +84,7 @@
     (ieee-floats:decode-float32 unsigned)))
 
 (defun make-double-float (low high)
-  (declare (type (unsigned-byte 32) low))
+  (declare (type (unsigned-byte 32) low high))
   (symbol-macrolet ((high-signed (unsigned->signed high)))
     #+abcl (system:make-double-float (logior (ash high 32) low))
     #+allegro (excl:shorts-to-double-float (ldb (byte 16 16) high)
