@@ -28,7 +28,6 @@
           #+ccl (ccl::single-float-bits x)
           #+cmu (kernel:single-float-bits x)
           #+sbcl (sb-kernel:single-float-bits x)
-          #+lispworks (lispworks-float:single-float-bits x)
           #- (or abcl allegro ccl cmu sbcl lispworks)
           (ieee-floats:encode-float32 x)))
 
@@ -52,9 +51,6 @@
                       (kernel:double-float-high-bits x))
         #+sbcl (values (sb-kernel:double-float-low-bits x)
                        (sb-kernel:double-float-high-bits x))
-        #+lispworks (let ((bits (lispworks-float:double-float-bits x)))
-                      (values (logand #xffffffff bits)
-                              (ash bits -32)))
         #- (or abcl allegro ccl cmu sbcl lispworks)
         (encode-float64 x))
     (values lo (logand #xFFFFFFFF hi))))
@@ -78,8 +74,6 @@
     #+ccl (ccl::host-single-float-from-unsigned-byte-32 unsigned)
     #+cmu (kernel:make-single-float signed)
     #+sbcl (sb-kernel:make-single-float signed)
-    ;; TODO I'm not sure about LispWorks!
-    ;; #+lispworks (lispworks-float:make-single-float unsigned)
     #- (or abcl allegro ccl cmu sbcl lispworks)
     (ieee-floats:decode-float32 unsigned)))
 
@@ -94,8 +88,6 @@
     #+ccl (ccl::double-float-from-bits high low)
     #+cmu (kernel:make-double-float high-signed low)
     #+sbcl (sb-kernel:make-double-float high-signed low)
-    ;; TODO I'm not sure about LispWorks!
-    ;; #+lispworks (lispworks-float:make-double-float high low)
     #- (or abcl allegro ccl cmu sbcl lispworks)
     (decode-float64 low high)))
 
