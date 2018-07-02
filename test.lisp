@@ -43,13 +43,19 @@
     (is-true (round-trips? most-positive-single-float))
     (is-true (round-trips? least-positive-single-float))
     (is-true (round-trips? single-float-epsilon))
-    (is-true (round-trips? single-float-negative-epsilon))
+    (is-true (round-trips? single-float-negative-epsilon))))
 
-    (print "Testing all single floats...")
-    (force-output)
-    (is-true
-     (loop for i from 0 below (expt 2 32)
-           always (= i (single-float-bits (make-single-float i)))))))
+(test single-float-round-trip/exhaustive
+  (print "Testing all single floats...")
+  (force-output)
+  (is-true
+   (loop for i from 0 below (expt 2 32)
+         always
+         (or
+          ;; Ignore signaling NaNs.
+          (<= #x7f800001 i #x7fbfffff)
+          (<= #xff800001 i #xffbfffff)
+          (= i (single-float-bits (make-single-float i)))))))
 
 (test double-float-vs-cffi
   (declare (notinline make-double-float double-float-bits))
