@@ -54,10 +54,14 @@
     (values (logand #xffffffff bits)
             (ash bits -32))))
 
+;;; TODO This isn't fast enough.
 (declaim (inline unsigned->signed))
 (defun unsigned->signed (n)
+  (declare (type (unsigned-byte 32) n)
+           (optimize (speed 3) (safety 0) (debug 0)))
   (if (logbitp 31 n)
-      (dpb n (byte 32 0) -1)
+      (the (signed-byte 32)
+           (dpb n (byte 32 0) -1))
       n))
 
 (defun make-single-float (unsigned)
