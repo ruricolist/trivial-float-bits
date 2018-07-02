@@ -75,6 +75,12 @@
     #+ccl (ccl::host-single-float-from-unsigned-byte-32 unsigned)
     #+cmu (kernel:make-single-float signed)
     #+sbcl (sb-kernel:make-single-float signed)
+    #+lispworks
+    (let ((vec (sys:make-typed-aref-vector 4)))
+      (declare (optimize (speed 3) (float 0) (safety 0))
+               (dynamic-extent vec))
+      (setf (sys:typed-aref '(unsigned-byte 32) vec 0) unsigned)
+      (sys:typed-aref 'single-float vec 0))
     #-(or abcl allegro ccl cmu sbcl lispworks)
     (make-single-float/cffi unsigned)))
 
