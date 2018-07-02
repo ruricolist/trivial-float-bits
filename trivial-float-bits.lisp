@@ -8,12 +8,6 @@
                  make-double-float
                  float-bits))
 
-#+cmucl
-(declaim (ext:constant-function single-float-bits
-                                double-float-bits
-                                make-single-float
-                                make-double-float))
-
 (declaim (ftype (function (single-float)
                           (unsigned-byte 32))
                 single-float-bits))
