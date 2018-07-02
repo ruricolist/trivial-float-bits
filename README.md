@@ -20,18 +20,12 @@ representation as an integer using implementation-specific functions.
 
 Conversion is done using low-level functions provided by the Lisp
 implementation. If the Lisp implementation is unsupported, we fall
-back to the [IEEE-Floats][] library.
+back to casting via FFI.
 
 Note that implementations differ in whether they preserve the sign bit
 as the sign of the returned integer. This library normalizes the
 functions so they all take, and receive, only unsigned integers.
 
-The list of implementation-specific functions is taken mostly
-unchanged from the source of [cl-protobufs][].
-
 ## License
 
 MIT
-
-[IEEE-Floats]: https://github.com/marijnh/ieee-floats/
-[cl-protobufs]: https://gitlab.common-lisp.net/qitab/cl-protobufs
