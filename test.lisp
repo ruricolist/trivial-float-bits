@@ -1,5 +1,8 @@
 (defpackage :trivial-float-bits/test
   (:use :cl :trivial-float-bits :fiveam)
+  (:import-from :trivial-float-bits
+    :single-float-bits/cffi
+    :double-float-bits/cffi)
   (:export :run-tests))
 (in-package :trivial-float-bits/test)
 
@@ -8,23 +11,6 @@
 
 (defun run-tests ()
   (run! 'trivial-float-bits))
-
-;;; Simple implementations for reference.
-
-(defun single-float-bits/cffi (x)
-  (declare (type single-float x))
-  (cffi:with-foreign-object (ptr :float)
-    (setf (cffi:mem-ref ptr :float) x)
-    (cffi:mem-ref ptr :uint32)))
-
-(defun double-float-bits/cffi (x)
-  (declare (type double-float x))
-  (let ((bits
-          (cffi:with-foreign-object (ptr :double)
-            (setf (cffi:mem-ref ptr :double) x)
-            (cffi:mem-ref ptr :uint64))))
-    (values (ldb (byte 32 0) bits)
-            (ldb (byte 64 32) bits))))
 
 (test single-float-vs-cffi
   (flet ((correct? (s)

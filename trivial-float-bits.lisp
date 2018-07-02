@@ -29,7 +29,7 @@
           #+cmu (kernel:single-float-bits x)
           #+sbcl (sb-kernel:single-float-bits x)
           #- (or abcl allegro ccl cmu sbcl lispworks)
-          (ieee-floats:encode-float32 x)))
+          (single-float-its/cffi x)))
 
 (declaim (ftype (function (double-float)
                           (values (unsigned-byte 32) (unsigned-byte 32)
@@ -56,7 +56,7 @@
     (values lo (logand #xFFFFFFFF hi))))
 
 (defun encode-float64 (x)
-  (let ((bits (ieee-floats:encode-float64 x)))
+  (let ((bits (double-float-bits/cffi x)))
     (values (logand #xffffffff bits)
             (ash bits -32))))
 
@@ -67,6 +67,7 @@
       n))
 
 (defun make-single-float (unsigned)
+  (declare (type (unsigned-byte 32) unsigned))
   (symbol-macrolet ((signed (unsigned->signed unsigned)))
     #+abcl (system:make-single-float signed)
     #+allegro (excl:shorts-to-single-float (ldb (byte 16 16) unsigned)
@@ -74,8 +75,8 @@
     #+ccl (ccl::host-single-float-from-unsigned-byte-32 unsigned)
     #+cmu (kernel:make-single-float signed)
     #+sbcl (sb-kernel:make-single-float signed)
-    #- (or abcl allegro ccl cmu sbcl lispworks)
-    (ieee-floats:decode-float32 unsigned)))
+    #-(or abcl allegro ccl cmu sbcl lispworks)
+    (make-single-float/cffi unsigned)))
 
 (defun make-double-float (low high)
   (declare (type (unsigned-byte 32) low high))
@@ -88,12 +89,8 @@
     #+ccl (ccl::double-float-from-bits high low)
     #+cmu (kernel:make-double-float high-signed low)
     #+sbcl (sb-kernel:make-double-float high-signed low)
-    #- (or abcl allegro ccl cmu sbcl lispworks)
-    (decode-float64 low high)))
-
-(defun decode-float64 (low high)
-  (ieee-floats:decode-float64
-   (logior (ash high 32) low)))
+    #-(or abcl allegro ccl cmu sbcl lispworks)
+    (make-double-float/cffi low high)))
 
 (defun float-bits (f)
   (etypecase f
