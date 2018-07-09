@@ -1,5 +1,4 @@
 # trivial-float-bits
-### _Paul M. Rodriguez <pmr@ruricolist.com>_
 
 You can use `trivial-float-bits` to convert between a float and its
 representation as an integer using implementation-specific functions.
@@ -15,7 +14,7 @@ representation as an integer using implementation-specific functions.
 => 1.0
 
 (make-double-float 0 1072693248)
-=> 1.0D0 (100.0D0%)
+=> 1.0D0
 ```
 
 Conversion is done using low-level functions provided by the Lisp
