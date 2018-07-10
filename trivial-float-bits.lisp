@@ -23,7 +23,7 @@
           #+cmu (kernel:single-float-bits x)
           #+sbcl (sb-kernel:single-float-bits x)
           #- (or abcl allegro ccl cmu sbcl lispworks)
-          (single-float-its/cffi x)))
+          (single-float-bits/cffi x)))
 
 (declaim (ftype (function (double-float)
                           (values (unsigned-byte 32) (unsigned-byte 32)
