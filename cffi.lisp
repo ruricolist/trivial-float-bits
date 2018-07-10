@@ -27,5 +27,5 @@
   (declare (type (unsigned-byte 32) lo hi))
   (let ((n (logior (ash hi 32) lo)))
     (cffi:with-foreign-object (ptr :uint64)
-      (setf (cffi:mem-ref ptr :uint32) n)
+      (setf (cffi:mem-ref ptr :uint64) n)
       (cffi:mem-ref ptr :double))))
